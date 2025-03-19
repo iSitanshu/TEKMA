@@ -21,27 +21,23 @@ const generateAccesssAndRefreshTokens = async(userId) => {
     }
 }
 
-
 const registerUser = asyncHandler( async (req, res) => {
 
-    // get user details from the frontend
     const {email, username, password, role} = req.body
     console.log("FullName = ",username) 
 
-    // validation - not empty
     if(
         [email, username, password, role].some((field)=>
         field?.trim() === "")
-    ) // ek bhi field mein true hua too field empty hai
-    throw new ApiError(400, "All fields are required")
+    ) throw new ApiError(400, "All fields are required");
     
-    //check if user already exit : username and email
+
     const exitedUser = await User.findOne({
         $or: [{ username }, { email }]
     })
     if(exitedUser) throw new ApiError(409, "User with email or username already exit")
 
-    //create user object - create entry in DB
+
     const user = await User.create({
         email,
         password,
@@ -68,28 +64,23 @@ const registerUser = asyncHandler( async (req, res) => {
 
 const loginUser = asyncHandler( async (req, res) => {
 
-    // get data from req.body
     const {email, username, password} = req.body
     console.log("email = ",email)
 
-    // validation - not empty
     if(!username && !email) throw new ApiError(400, "Username or Email is required");
 
-    // find the user
     const user = await User.findOne({
         $or: [{username}, {email}]
     })
 
     if(!user) throw new ApiError(404, "User does not exist");
-    
-    // check password
+ 
     const isPasswordValid = await user.isPasswordCorrect(password)
     if(!password) throw new ApiError(404, "Invalid user credentials");
 
-    // refresh and access Token
     const { accessToken, refreshToken } = await generateAccesssAndRefreshTokens(user._id)
 
-    // send tokens in the cookies
+ 
     const loggedInUser = await User.findById(user._id).
     select("-password -refreshToken")
 
@@ -188,6 +179,5 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
     }
 
 })
-
 
 export { registerUser, loginUser, logoutUser, refreshAccessToken }
