@@ -23,11 +23,11 @@ const generateAccesssAndRefreshTokens = async(userId) => {
 
 const registerUser = asyncHandler( async (req, res) => {
 
-    const {email, username, password, role} = req.body
+    const {email, username, password, role, department} = req.body
     console.log("FullName = ",username) 
 
     if(
-        [email, username, password, role].some((field)=>
+        [email, username, password, role, department].some((field)=>
         field?.trim() === "")
     ) throw new ApiError(400, "All fields are required");
     
@@ -43,6 +43,7 @@ const registerUser = asyncHandler( async (req, res) => {
         password,
         username: username.toLowerCase(),
         role,
+        department
     })
 
     const createdUser = await User.findById(user._id).select(
@@ -53,8 +54,7 @@ const registerUser = asyncHandler( async (req, res) => {
         return res.status(201).json(
             new ApiResponse(201, 
                 {
-                    user: createdUser,  
-                    userDetails: { email, username, role }
+                    user: createdUser,
                 }, 
                 "User registered successfully"
             )
@@ -65,7 +65,6 @@ const registerUser = asyncHandler( async (req, res) => {
 const loginUser = asyncHandler( async (req, res) => {
 
     const {email, username, password} = req.body
-    console.log("email = ",email)
 
     if(!username && !email) throw new ApiError(400, "Username or Email is required");
 
@@ -83,6 +82,8 @@ const loginUser = asyncHandler( async (req, res) => {
  
     const loggedInUser = await User.findById(user._id).
     select("-password -refreshToken")
+
+    console.log(loggedInUser)
 
     const options = {
         httpOnly: true,

@@ -28,6 +28,10 @@ const userSchema = new Schema(
             enum: ['Host','Member'],
             required: true
         },
+        department: {
+            type: String,
+            required: true
+        },
         refreshToken: {
             type: String
         }
@@ -73,5 +77,6 @@ userSchema.methods.generateRefreshToken = function(){
         }
     )   
 }
+  
 
 export const User = mongoose.model("User", userSchema)

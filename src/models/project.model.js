@@ -6,15 +6,20 @@ const projectSchema = new Schema(
             type: String, 
             required: true 
         },
-        description: { 
+        host: {
+            type: String
+        },
+        members: 
+        [{
+            type: String
+        }],
+        description: {
+            type: String
+        },
+        department: { 
             type: String, 
             required: true 
-        },
-        created_by: {
-            type: Schema.Types.ObjectId, 
-            ref: 'User', 
-            required: true 
-        },
+        }
     },{timestamps: true})
 
 export const Project = mongoose.model("Project", projectSchema)

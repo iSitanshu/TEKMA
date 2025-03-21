@@ -21,11 +21,23 @@ router.route("/register").post(
     registerUser
     )
 
-router.route("/login").post(loginUser)
+router.route("/login").post(
+    upload.fields([
+        {
+            name: "avatar",
+            maxCount: 1
+        }, 
+        {
+            name: "coverImage",
+            maxCount: 1
+        }
+    ]),loginUser)
 
 //secured Routes
 router.route("/logout").post(verifyJWT, logoutUser)
 router.route("/refresh-token").post(refreshAccessToken)
 // router.route('/task-assignment').post(assignTask)
+
+
 
 export default router;
