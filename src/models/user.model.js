@@ -30,7 +30,6 @@ const userSchema = new Schema(
         },
         department: {
             type: String,
-            required: true
         },
         refreshToken: {
             type: String
